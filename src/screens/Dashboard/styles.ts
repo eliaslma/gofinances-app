@@ -1,6 +1,8 @@
 import styled from 'styled-components/native';
 import { RFValue, RFPercentage } from 'react-native-responsive-fontsize'
 import { Feather } from '@expo/vector-icons'
+import { getStatusBarHeight } from 'react-native-iphone-x-helper';
+
 export const Container = styled.View`
     flex: 1;
     background-color: ${({theme}) => theme.colors.background};
@@ -10,10 +12,9 @@ export const Header = styled.View`
     width: 100%;
     height: ${RFPercentage(42)}px;
     background-color: ${ ({theme}) => theme.colors.primary};
-
-    
-    align-items: center;
     justify-content: center;
+    align-items: flex-start;
+    flex-direction: row;
 
 `;
 
@@ -23,7 +24,7 @@ export const UserWrapper = styled.View`
     justify-content: space-between;
     width: 100%;
     padding: 0 24px;
-    
+    margin-top: ${getStatusBarHeight() + 28}px 
 
 `;
 
@@ -59,14 +60,21 @@ export const UserName = styled.Text`
 
 `;
 
-export const Logout = styled.View`
-
-
-
-`;
-
 // estiliza uma biblioteca que não está instalada por padrão
 export const Icon = styled(Feather)`
     color: ${({ theme}) => theme.colors.secondary};
     font-size: ${RFValue(24)}px;
+
+    
+`;
+
+export const HighlightCards = styled.ScrollView.attrs({
+    horizontal: true,
+    showsHorizontalScrollIndicator: false,
+    contentContainerStyle: { paddingHorizontal: 24}
+})`
+
+    width: 100%;
+    position: absolute;
+    margin-top: ${RFPercentage(20)}px;
 `;
