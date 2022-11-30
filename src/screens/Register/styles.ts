@@ -19,7 +19,6 @@ export const Title = styled.Text`
     color: ${({ theme }) => theme.colors.shape};
     font-size: ${RFValue(18)}px;
     font-family: ${({ theme }) => theme.fonts.regular};
-    color: white;
 `;
 
 export const Form = styled.View`
