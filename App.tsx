@@ -14,8 +14,8 @@ import {
 //importação de componentes criados
 
 import theme from '@myApp/global/styles/theme'
-import { Dashboard } from '@myApp/screens/Dashboard';
-
+//import { Dashboard } from '@myApp/screens/Dashboard';
+import { Register } from '@myApp/screens/Register';
 
 export default function App() {
   // carrega as fontes antes de iniciar o aplicativo
@@ -34,7 +34,7 @@ export default function App() {
     SplashScreen.hideAsync();
     return (
       <ThemeProvider theme={theme}>
-        <Dashboard/>
+        <Register/>
       </ThemeProvider>
        
    );
