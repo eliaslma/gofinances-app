@@ -1,6 +1,5 @@
 //importação de componentes de biliotecas
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
 import { ThemeProvider } from 'styled-components'
 import * as SplashScreen from 'expo-splash-screen';
 
@@ -15,7 +14,8 @@ import {
 
 import theme from '@myApp/global/styles/theme'
 //import { Dashboard } from '@myApp/screens/Dashboard';
-import { Register } from '@myApp/screens/Register';
+//import { Register } from '@myApp/screens/Register';
+import { CategorySelect } from '@myApp/screens/CategorySelect';
 
 export default function App() {
   // carrega as fontes antes de iniciar o aplicativo
@@ -34,7 +34,7 @@ export default function App() {
     SplashScreen.hideAsync();
     return (
       <ThemeProvider theme={theme}>
-        <Register/>
+        <CategorySelect/>
       </ThemeProvider>
        
    );
