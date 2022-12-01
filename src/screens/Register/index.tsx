@@ -35,11 +35,12 @@ interface FormData {
 
 
 const schema = Yup.object().shape({
-    name: Yup.string().required('Nome é obrigatório'),
+    name: Yup.string().required('Descrição é obrigatório'),
     amount: Yup
     .number()
     .typeError('Informe um valor numérico')
     .positive('Valor não pode ser negativo')
+    .required('Valor é obrigatório')
 });
 
 export function Register(){
@@ -58,8 +59,13 @@ export function Register(){
       });
 
     function handleTransactionsTypeSelect(type: 'up' | 'down'){
-        setSelection(true);
+
+        // verifica se o botão não foi selecionado para evitar mudança de estado a cada clique
+        if(!transactionType){
+            setSelection(true);
+        }
         setTransactionType(type);
+
     }
 
     function handleOpenSelectionCategoryModal(){
