@@ -1,7 +1,7 @@
 import { categories } from '@myApp/utils/categories';
 import React from 'react'
 import { FlatList } from 'react-native';
-import { Button } from '@myApp/components/Forms/Button';
+import { Button } from '@myApp/components/Form/Button';
 import { 
     Container,
     Header,

@@ -13,11 +13,11 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 
-import { Button } from '@myApp/components/Forms/Button';
-import { TransactionTypeButton } from '@myApp/components/Forms/TransactionTypeButton';
-import { CategorySelectButton } from '@myApp/components/Forms/CategorySelectButton';
+import { Button } from '@myApp/components/Form/Button';
+import { TransactionTypeButton } from '@myApp/components/Form/TransactionTypeButton';
+import { CategorySelectButton } from '@myApp/components/Form/CategorySelectButton';
 import { CategorySelect } from '../CategorySelect';
-import { InputForm } from '@myApp/components/Forms/InputForm';
+import { InputForm } from '@myApp/components/Form/InputForm';
 import { 
     Container,
     Header,

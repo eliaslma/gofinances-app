@@ -3,10 +3,12 @@ import { FlatList } from 'react-native';
 import { RFValue, RFPercentage } from 'react-native-responsive-fontsize';
 import { Feather } from '@expo/vector-icons';
 import { getBottomSpace, getStatusBarHeight } from 'react-native-iphone-x-helper';
+import { BorderlessButton } from 'react-native-gesture-handler';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { DataListProps } from '.';
 
-export const Container = styled.View`
+export const Container = styled(GestureHandlerRootView)`
     flex: 1;
     background-color: ${({theme}) => theme.colors.background};
 `;
@@ -35,6 +37,8 @@ export const UserInfo = styled.View`
     flex-direction: row;
     align-items: center;
 `;
+
+export const LogoutButton = styled(BorderlessButton)``;
 
 export const Photo = styled.Image`
     width: ${RFValue(48)}px;

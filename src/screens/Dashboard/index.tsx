@@ -7,6 +7,7 @@ import{
     HighlightCards,
     UserWrapper,
     UserInfo,
+    LogoutButton,
     Photo,
     User,
     UserGreeting,
@@ -60,7 +61,11 @@ export function Dashboard(){
                             <UserName>Elias</UserName>
                         </User>
                     </UserInfo>
-                    <Icon name="power"/>
+
+                    <LogoutButton>
+                        <Icon name="power"/>
+                    </LogoutButton>
+                    
                 </UserWrapper>
             </Header>
             <HighlightCards>
