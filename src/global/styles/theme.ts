@@ -7,6 +7,7 @@ export default {
         success_light: 'rgba(18,164,84,0.1)',
         attention: '#E83F5B',
         attention_light: 'rgba(232, 63, 91, 0.1)',
+        error: 'rgba(232, 63, 91, 0.6)',
         shape: '#FFFFFF',
         title: '#363F5F',
         text: '#969CB2',
