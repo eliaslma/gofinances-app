@@ -13,6 +13,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import uuid from 'react-native-uuid';
 
 import { Button } from '@myApp/components/Form/Button';
 import { TransactionTypeButton } from '@myApp/components/Form/TransactionTypeButton';
@@ -89,10 +90,12 @@ export function Register(){
         }
 
         const data = {
+            id: String(uuid.v4()),
             name: form.name,
             amount: form.amount,
             transactionType,
-            category: category.key
+            category: category.key,
+            date: new Date()
         }
         
 
