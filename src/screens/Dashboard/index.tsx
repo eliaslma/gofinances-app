@@ -62,7 +62,7 @@ export function Dashboard(){
                         </User>
                     </UserInfo>
 
-                    <LogoutButton>
+                    <LogoutButton onPress={() => {}}>
                         <Icon name="power"/>
                     </LogoutButton>
                     

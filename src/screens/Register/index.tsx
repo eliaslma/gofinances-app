@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // modal - exibir modal ao clicar na categoria
 // TouchableWithoutFeedback - clicar em qualquer area tela e fechar o keyboard
@@ -12,6 +12,7 @@ import { useForm } from 'react-hook-form';
 // yupResolver força padronização no envio de dados do formulário
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { Button } from '@myApp/components/Form/Button';
 import { TransactionTypeButton } from '@myApp/components/Form/TransactionTypeButton';
@@ -44,6 +45,7 @@ const schema = Yup.object().shape({
 });
 
 export function Register(){
+    const dataKey = '@gofinances:transactions';
     const [category, setCategory] = useState({
        key: 'category',
        name: 'Categoria'
@@ -76,7 +78,7 @@ export function Register(){
         setCategoryModalOpen(false);
     }
 
-    function handleRegister(form : FormData){
+    async function handleRegister(form : FormData){
 
         if(!transactionType){
             return Alert.alert('Selecione o tipo da transação')
@@ -92,7 +94,23 @@ export function Register(){
             transactionType,
             category: category.key
         }
-        console.log(data);
+        
+
+        try {
+            const dataList = await AsyncStorage.getItem(dataKey); // puxando todos os dados com a key específica
+            const currentData = dataList ? JSON.parse(dataList) : [];
+
+            const dataFormatted = [
+                ...currentData,
+                data
+            ]
+
+            await AsyncStorage.setItem(dataKey, JSON.stringify(dataFormatted));
+        } catch (error) {
+            console.log(error);
+            Alert.alert("Não foi possível salvar")
+        }
+
     }
 
 
