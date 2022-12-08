@@ -57,7 +57,7 @@ export function Register(){
 
     const [categoryModalOpen, setCategoryModalOpen] = useState(false)
 
-    const { control, handleSubmit, formState:{ errors } } = useForm({
+    const { control, handleSubmit, reset, formState:{ errors } } = useForm({
         resolver: yupResolver(schema)
       });
 
@@ -109,12 +109,30 @@ export function Register(){
             ]
 
             await AsyncStorage.setItem(dataKey, JSON.stringify(dataFormatted));
+
+            // reseta os estados de cadastro, value dos inputs
+            reset();
+            setSelection(false);
+            setTransactionType('');
+            setCategory({key: 'category', name: 'Categoria'});
+            
+
         } catch (error) {
             console.log(error);
             Alert.alert("Não foi possível salvar")
         }
 
     }
+
+    useEffect(() => {
+       async function showData(){
+        const data = await AsyncStorage.getItem(dataKey);
+        console.log(JSON.parse(data));
+       }
+       
+       showData();
+
+    },[])
 
 
     return(
