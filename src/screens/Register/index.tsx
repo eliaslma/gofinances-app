@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 // modal - exibir modal ao clicar na categoria
 // TouchableWithoutFeedback - clicar em qualquer area tela e fechar o keyboard
@@ -14,6 +14,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import uuid from 'react-native-uuid';
+import { useNavigation } from '@react-navigation/native';
 
 import { Button } from '@myApp/components/Form/Button';
 import { TransactionTypeButton } from '@myApp/components/Form/TransactionTypeButton';
@@ -46,7 +47,7 @@ const schema = Yup.object().shape({
 });
 
 export function Register(){
-    const dataKey = '@gofinances:transactions';
+    
     const [category, setCategory] = useState({
        key: 'category',
        name: 'Categoria'
@@ -56,6 +57,8 @@ export function Register(){
     const [selectionStatus, setSelection] = useState(false) 
 
     const [categoryModalOpen, setCategoryModalOpen] = useState(false)
+
+    const navigation = useNavigation();
 
     const { control, handleSubmit, reset, formState:{ errors } } = useForm({
         resolver: yupResolver(schema)
@@ -93,13 +96,14 @@ export function Register(){
             id: String(uuid.v4()),
             name: form.name,
             amount: form.amount,
-            transactionType,
+            type: transactionType,
             category: category.key,
             date: new Date()
         }
         
 
         try {
+            const dataKey = '@gofinances:transactions';
             const dataList = await AsyncStorage.getItem(dataKey); // puxando todos os dados com a key específica
             const currentData = dataList ? JSON.parse(dataList) : [];
 
@@ -115,6 +119,9 @@ export function Register(){
             setSelection(false);
             setTransactionType('');
             setCategory({key: 'category', name: 'Categoria'});
+
+            // retorna a pagina de Dashboard após cadastro de nova transação
+            navigation.goBack();
             
 
         } catch (error) {
@@ -123,17 +130,6 @@ export function Register(){
         }
 
     }
-
-    useEffect(() => {
-       async function showData(){
-        const data = await AsyncStorage.getItem(dataKey);
-        console.log(JSON.parse(data));
-       }
-       
-       showData();
-
-    },[])
-
 
     return(
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
