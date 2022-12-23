@@ -30,6 +30,7 @@ export interface DataListProps extends TransactionCardProps{
 
 interface HighlightProps {
     amount: string;
+    lastTransaction: string;
 }
 interface HighLightData{
     entries: HighlightProps;
@@ -41,6 +42,27 @@ export function Dashboard(){
     const [isLoading, setLoading] = useState(true);
     const [myTransactions,setMyTransactions] = useState<DataListProps[]>([]);
     const [highLightData, setHighLightData] = useState<HighLightData>({} as HighLightData);
+    
+
+
+    function getLastTransactionDate(transactions: DataListProps[], type: 'up' | 'down'){
+
+        // função max retorna o maior valor do vetor
+        const lastTransaction = new Date(
+        Math.max.apply(Math, transactions
+        .filter(( transaction ) => transaction.type === type)
+        .map(( transaction ) => new Date(transaction.date).getTime())));
+
+        // retorna dia e mês por extenso
+        return `${lastTransaction.getDate()} de ${lastTransaction.toLocaleString('pt-BR',{ month: 'long'})}`;
+
+    }
+
+    function getAtualDate(){
+        const currentDate = new Date();
+        return `${currentDate.getDate()} de ${currentDate.toLocaleString('pt-BR',{ month: 'long'})}`
+    }
+
 
     async function getTransactionList(){
         const dataKey = '@gofinances:transactions';
@@ -79,25 +101,33 @@ export function Dashboard(){
                 category: item.category,
                 date
             }
-
-            
+    
         });
+
+        const lastTransactionEntries = getLastTransactionDate(transactions,'up')
+        const lastTransactionExpensives = getLastTransactionDate(transactions,'down')
+        const currentDate = getAtualDate()
+        
         setMyTransactions(transactionsFormatted)
+
         const balance = entriesTotal - expensiveTotal;
+
         setHighLightData({
             entries: {
-                amount: entriesTotal.toLocaleString('pt-BR',{ style: 'currency', currency: 'BRL'})
+                amount: entriesTotal.toLocaleString('pt-BR',{ style: 'currency', currency: 'BRL'}),
+                lastTransaction: `Última entrada dia ${lastTransactionEntries}`,
             },
             expensives: {
-                amount: expensiveTotal.toLocaleString('pt-BR',{ style: 'currency', currency: 'BRL'})
+                amount: expensiveTotal.toLocaleString('pt-BR',{ style: 'currency', currency: 'BRL'}),
+                lastTransaction: `Última saída dia ${lastTransactionExpensives}`,
             },
             total: {
-                amount: balance.toLocaleString('pt-BR',{ style: 'currency', currency: 'BRL'})
+                amount: balance.toLocaleString('pt-BR',{ style: 'currency', currency: 'BRL'}),
+                lastTransaction: `01 a ${currentDate}`
             }
             
         });
         setLoading(false)
-        
        
     }
 
@@ -135,9 +165,9 @@ export function Dashboard(){
                 </UserWrapper>
             </Header>
             <HighlightCards>
-                <HighlightCard type="up" title="Entradas" amount={highLightData.entries.amount} lastTransaction="Última entrada dia 13 de abril"/>
-                <HighlightCard type="down" title="Saídas" amount={highLightData.expensives.amount} lastTransaction="Última saída dia 03 de abril"/>
-                <HighlightCard type="total" title="Total" amount={highLightData.total.amount} lastTransaction="01 à 16 de abril"/>
+                <HighlightCard type="up" title="Entradas" amount={highLightData.entries.amount} lastTransaction={highLightData.entries.lastTransaction}/>
+                <HighlightCard type="down" title="Saídas" amount={highLightData.expensives.amount} lastTransaction={highLightData.expensives.lastTransaction}/>
+                <HighlightCard type="total" title="Total" amount={highLightData.total.amount} lastTransaction={highLightData.total.lastTransaction}/>
             </HighlightCards>
             <Transactions>
                 <Title>Listagem</Title>
@@ -145,8 +175,10 @@ export function Dashboard(){
                     data={myTransactions}
                     keyExtractor={item => item.id}
                     renderItem={ ({ item } ) => 
-                    <TransactionCard data={item}/> }
+                    <TransactionCard data={item}/>
+                }
                 />
+                
             </Transactions>
             </>
             }

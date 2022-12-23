@@ -3,8 +3,8 @@ import { FlatList } from 'react-native';
 import { RFValue, RFPercentage } from 'react-native-responsive-fontsize';
 import { Feather } from '@expo/vector-icons';
 import { getBottomSpace, getStatusBarHeight } from 'react-native-iphone-x-helper';
-import { BorderlessButton } from 'react-native-gesture-handler';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { BorderlessButton, GestureHandlerRootView } from 'react-native-gesture-handler';
+
 
 import { DataListProps } from '.';
 
@@ -101,8 +101,7 @@ export const Title = styled.Text`
 
 `;
 
-export const TransactionList = styled(
-    FlatList as new () => FlatList<DataListProps>).attrs({
+export const TransactionList = styled(FlatList<DataListProps>).attrs({
   showsVerticalScrollIndicator: false,
   contentContainerStyle: {
     paddingBottom: getBottomSpace(),
