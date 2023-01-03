@@ -143,14 +143,14 @@ export function Register(){
                     name="name" 
                     placeholder="Descrição" 
                     autoCorrect={false} 
-                    error={errors.name && errors.name.message}
+                    error={errors.name}
                 />
                 
                 <InputForm control={control} 
                     name="amount" 
                     placeholder="Valor" 
                     keyboardType="numeric" 
-                    error={errors.amount && errors.amount.message}
+                    error={errors.amount}
                 />
 
                 <TransactionTypes>

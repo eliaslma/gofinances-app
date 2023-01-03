@@ -5,12 +5,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useTheme } from 'styled-components';
 import { Register } from '@myApp/screens/Register';
 import { Dashboard } from '@myApp/screens/Dashboard';
-
+import { Resume } from '@myApp/screens/Resume';
 
 const { Navigator, Screen } = createBottomTabNavigator();
-
-
-
 
 export function AppRoutes(){
 
@@ -53,7 +50,7 @@ export function AppRoutes(){
 
             <Screen 
                 name="Resumo"
-                component={Register} 
+                component={Resume} 
                 options={{ tabBarIcon: (({ size, color })=> (
                     <MaterialIcons 
                         name='pie-chart'

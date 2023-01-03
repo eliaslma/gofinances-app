@@ -22,3 +22,8 @@ export const Title = styled.Text`
     font-size: ${RFValue(18)}px;
     font-family: ${({ theme }) => theme.fonts.regular};
 `;
+
+export const ChartContainer = styled.View`
+    width: 100%;
+    align-items: center;
+`
