@@ -9,6 +9,7 @@ import { useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import { addMonths, subMonths, format } from "date-fns";
 import { ptBR } from 'date-fns/locale'
 import { ScrollView } from "react-native";
+import { ActivityIndicator } from "react-native";
 
 
 import { HistoryCard } from "@myApp/components/HistoryCard";
@@ -20,13 +21,15 @@ import {
     MonthSelect,
     SelectButton,
     Month,
-    SelectIcon
+    SelectIcon,
+    LoadContainer
 } from "./styles";
+import theme from "@myApp/global/styles/theme";
 
 export function Resume(){
     const [selectedDate, setSelectedDate] = useState( new Date());
     const [totalByCategories, setTotalByCategories] = useState([]);
-
+    const [isLoading, setIsLoading] = useState(false)
 
     function handleDateChange(action: 'next' | 'prev'){
         if(action === 'next'){
@@ -41,6 +44,7 @@ export function Resume(){
         const dataKey = '@gofinances:transactions';
         const response = await AsyncStorage.getItem(dataKey);
         const transactions = response ? JSON.parse(response): [];
+        setIsLoading(true)
 
         const expensives = transactions
         .filter(expensive => 
@@ -73,6 +77,7 @@ export function Resume(){
             })
         })
         setTotalByCategories(totalByCategory)
+        setIsLoading(false)
     }
 
     useFocusEffect( useCallback(() => { 
@@ -84,35 +89,46 @@ export function Resume(){
             <Header>
                 <Title>Resumo por categoria</Title>
             </Header>
-            <MonthSelect>
-                <SelectButton onPress={() => handleDateChange('prev')}>
-                    <SelectIcon name="chevron-left"/>
-                </SelectButton>
-                <Month>{ format(selectedDate,'MMMM, yyyy', {locale: ptBR})}</Month>
-                <SelectButton onPress={() => handleDateChange('next')}>
-                    <SelectIcon name="chevron-right"/>
-                </SelectButton>
-            </MonthSelect>
-            <ChartContainer>
-                <VictoryPie
-                  data={totalByCategories} 
-                  colorScale={totalByCategories.map(category => category.color)}
-                  style={{
-                    labels:{
-                        fontSize: RFValue(16),
-                    }
-                  }}
-                  width={RFValue(245)}
-                  height={RFValue(245)}
-                  x="percentFormatted" 
-                  y="percent" 
-                />
-            </ChartContainer>
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 24, paddingBottom: useBottomTabBarHeight()}}>
-            {   totalByCategories.map(item => 
-                <HistoryCard key={item.key} title={item.name} amount={item.total} color={item.color}/>
-            )}
-            </ScrollView>
+
+            { isLoading ?
+                <LoadContainer>
+                    <ActivityIndicator
+                    color={theme.colors.primary}
+                    size="large"                    
+                    />
+                </LoadContainer> :
+            <>
+                <MonthSelect>
+                    <SelectButton onPress={() => handleDateChange('prev')}>
+                        <SelectIcon name="chevron-left"/>
+                    </SelectButton>
+                    <Month>{ format(selectedDate,'MMMM, yyyy', {locale: ptBR})}</Month>
+                    <SelectButton onPress={() => handleDateChange('next')}>
+                        <SelectIcon name="chevron-right"/>
+                    </SelectButton>
+                </MonthSelect>
+                <ChartContainer>
+                    <VictoryPie
+                    data={totalByCategories} 
+                    colorScale={totalByCategories.map(category => category.color)}
+                    style={{
+                        labels:{
+                            fontSize: RFValue(16),
+                        }
+                    }}
+                    width={RFValue(245)}
+                    height={RFValue(245)}
+                    x="percentFormatted" 
+                    y="percent" 
+                    />
+                </ChartContainer>
+                <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 24, paddingBottom: useBottomTabBarHeight()}}>
+                {   totalByCategories.map(item => 
+                    <HistoryCard key={item.key} title={item.name} amount={item.total} color={item.color}/>
+                )}
+                </ScrollView>
+            </>
+            }
         </Container>
     );
 }

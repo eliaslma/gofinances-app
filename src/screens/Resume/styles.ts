@@ -46,3 +46,9 @@ export const SelectIcon = styled(Feather)`
     font-size: ${RFValue(24)}px;
     color: '#000000';
 `;
+
+export const LoadContainer = styled.View`
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+`;
