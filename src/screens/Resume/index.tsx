@@ -4,19 +4,22 @@ import { useCallback } from "react";
 import { categories } from "@myApp/utils/categories";
 import { useFocusEffect } from "@react-navigation/native";
 import { VictoryPie } from "victory-native";
-import { useBottomTabBarHeight} from '@react-navigation/bottom-tabs'
+import { RFValue } from "react-native-responsive-fontsize";
+import { useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
+import { ScrollView } from "react-native";
 
+
+import { HistoryCard } from "@myApp/components/HistoryCard";
 import { 
     Container,
     Header,
     Title,
-    ChartContainer
+    ChartContainer,
+    MonthSelect,
+    SelectButton,
+    Month,
+    SelectIcon
 } from "./styles";
-
-import { HistoryCard } from "@myApp/components/HistoryCard";
-import { ScrollView } from "react-native";
-import { RFValue } from "react-native-responsive-fontsize";
-
 
 export function Resume(){
 
@@ -63,6 +66,15 @@ export function Resume(){
             <Header>
                 <Title>Resumo por categoria</Title>
             </Header>
+            <MonthSelect>
+                <SelectButton>
+                    <SelectIcon name="chevron-left"/>
+                </SelectButton>
+                <Month>maio, 2020</Month>
+                <SelectButton>
+                    <SelectIcon name="chevron-right"/>
+                </SelectButton>
+            </MonthSelect>
             <ChartContainer>
                 <VictoryPie
                   data={totalByCategories} 
