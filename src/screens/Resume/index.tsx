@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useCallback } from "react";
+import { useCallback } from "react";
 import { categories } from "@myApp/utils/categories";
 import { useFocusEffect } from "@react-navigation/native";
 import { VictoryPie } from "victory-native";
+import { useBottomTabBarHeight} from '@react-navigation/bottom-tabs'
 
 import { 
     Container,
@@ -77,7 +78,7 @@ export function Resume(){
                   y="percent" 
                 />
             </ChartContainer>
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flex: 1, padding: 24}}>
+            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 24, paddingBottom: useBottomTabBarHeight()}}>
             {   totalByCategories.map(item => 
                 <HistoryCard key={item.key} title={item.name} amount={item.total} color={item.color}/>
             )}
