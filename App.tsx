@@ -1,7 +1,6 @@
 //importação de componentes de biliotecas
 import React from 'react';
 import { ThemeProvider } from 'styled-components'
-import { NavigationContainer } from '@react-navigation/native'
 import 'react-native-gesture-handler';
 import 'intl';
 import 'intl/locale-data/jsonp/pt-BR'
@@ -15,10 +14,10 @@ import {
 } from '@expo-google-fonts/poppins'
 
 //importação de componentes criados
-
 import theme from '@myApp/global/styles/theme'
-import { AppRoutes } from '@myApp/routes/app.routes';
 import { StatusBar } from 'expo-status-bar';
+import { AuthProvider } from '@myApp/hooks/auth';
+import { Routes } from '@myApp/routes';
 
 export default function App() {
   // carrega as fontes antes de iniciar o aplicativo
@@ -34,20 +33,18 @@ export default function App() {
   }
   
   else{
-    SplashScreen.hideAsync();
-    return (
 
-      <ThemeProvider theme={theme}>
-        <StatusBar style="light" />
-        <NavigationContainer >
-          <AppRoutes/>
-        </NavigationContainer>
-      </ThemeProvider>
-       
+    SplashScreen.hideAsync();
+
+    return (
+		<ThemeProvider theme={theme}>
+    		<StatusBar style="light" />
+          	<AuthProvider>
+				<Routes/>
+			</AuthProvider>
+        </ThemeProvider>
    );
   }
-
-  
 }
 
 
