@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useState } from "react";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import * as AuthSession from 'expo-auth-session';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import axios from "axios";
@@ -17,8 +17,11 @@ interface User{
 }
 interface AuthContextData {
     user: User;
-    SignInWithGoogle(): Promise<void>
-    SignInWithApple(): Promise<void>
+    SignInWithGoogle(): Promise<void>;
+    SignInWithApple(): Promise<void>;
+    signOut(): Promise<void>;
+    userStorageLoading: boolean;
+
 }
 
 type AuthResponse = {
@@ -32,11 +35,13 @@ const AuthContext = createContext({} as AuthContextData);
 
 function AuthProvider({children}: AuthProviderProps){
 
-    const [userInfos, setUserInfos] = useState<User>({} as User)
+    const [userInfos, setUserInfos] = useState<User>({} as User);
+    const [userStorageLoading,setUserStorageLoading] = useState(true);
+    const userStorageKey = '@gofinances:user';
 
     async function SignInWithGoogle(){
         try{
-            const CLIEND_ID = "ADICIONE O CLIENT_ID DA GOOGLE CLOUD PLATFORM";
+            const CLIEND_ID = "643802899002-ht9jh8bmd0lokicte4ei9j4auaj4tkbk.apps.googleusercontent.com";
             const REDIRECT_URI = "https://auth.expo.io/@eliaslma/gofinances"
             const SCOPE = encodeURI("profile email");
             const RESPONSE_TYPE = "token";
@@ -52,7 +57,7 @@ function AuthProvider({children}: AuthProviderProps){
                     email: response.data.email,
                     picture: response.data.picture,
                 }
-                await AsyncStorage.setItem('@gofinances:user',JSON.stringify(userLogged))
+                await AsyncStorage.setItem(userStorageKey,JSON.stringify(userLogged))
                 setUserInfos(userLogged)
             }
 
@@ -76,8 +81,9 @@ function AuthProvider({children}: AuthProviderProps){
                     id: credential.user,
                     name: String(credential.fullName),
                     email: credential.email,
+                    picture: `https://ui-avatars.com/api/?name=${credential.fullName.givenName}&lenght=1`
                 }
-                await AsyncStorage.setItem('@gofinances:user',JSON.stringify(userLogged))
+                await AsyncStorage.setItem(userStorageKey,JSON.stringify(userLogged))
                 setUserInfos(userLogged)
             }
             // signed in
@@ -86,11 +92,32 @@ function AuthProvider({children}: AuthProviderProps){
           }
     }
 
+    async function getUserInfo(){
+        const userData = await AsyncStorage.getItem(userStorageKey)
+        if(userData){
+            const userDataFormatted = JSON.parse(userData) as User
+            setUserInfos(userDataFormatted)
+        }
+        setUserStorageLoading(false)
+        
+    }
+
+    async function signOut(){
+        setUserInfos({} as User)
+        await AsyncStorage.removeItem(userStorageKey)
+    }
+
+    useEffect(() =>{
+        getUserInfo()
+    },[])
+
     return(
         <AuthContext.Provider value={{
             user: userInfos,
             SignInWithGoogle,
             SignInWithApple,
+            signOut,
+            userStorageLoading
             }}>
             {children}
         </AuthContext.Provider>
