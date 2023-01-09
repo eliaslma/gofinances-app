@@ -1,5 +1,6 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 import * as AuthSession from 'expo-auth-session';
+import * as AppleAuthentication from 'expo-apple-authentication';
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -14,10 +15,10 @@ interface User{
     email: string;
     picture?: string;
 }
-
 interface AuthContextData {
     user: User;
-    signInWithGoogle(): Promise<void>
+    SignInWithGoogle(): Promise<void>
+    SignInWithApple(): Promise<void>
 }
 
 type AuthResponse = {
@@ -33,7 +34,7 @@ function AuthProvider({children}: AuthProviderProps){
 
     const [userInfos, setUserInfos] = useState<User>({} as User)
 
-    async function signInWithGoogle(){
+    async function SignInWithGoogle(){
         try{
             const CLIEND_ID = "ADICIONE O CLIENT_ID DA GOOGLE CLOUD PLATFORM";
             const REDIRECT_URI = "https://auth.expo.io/@eliaslma/gofinances"
@@ -61,10 +62,35 @@ function AuthProvider({children}: AuthProviderProps){
 
     }
 
+    async function SignInWithApple(){
+        try {
+            const credential = await AppleAuthentication.signInAsync({
+              requestedScopes: [
+                AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+                AppleAuthentication.AppleAuthenticationScope.EMAIL,
+              ],
+            });
+
+            if(credential){
+                const userLogged: User = {
+                    id: credential.user,
+                    name: String(credential.fullName),
+                    email: credential.email,
+                }
+                await AsyncStorage.setItem('@gofinances:user',JSON.stringify(userLogged))
+                setUserInfos(userLogged)
+            }
+            // signed in
+          } catch (error) {
+            throw Error(error)
+          }
+    }
+
     return(
         <AuthContext.Provider value={{
             user: userInfos,
-            signInWithGoogle,
+            SignInWithGoogle,
+            SignInWithApple,
             }}>
             {children}
         </AuthContext.Provider>
