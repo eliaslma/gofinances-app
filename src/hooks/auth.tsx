@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
-import * as AuthSession from 'expo-auth-session';
+import * as Google from 'expo-auth-session/providers/google';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -24,47 +24,40 @@ interface AuthContextData {
 
 }
 
-type AuthResponse = {
-    params:{
-        access_token: string;
-    }
-    type: string;
-}
-
 const AuthContext = createContext({} as AuthContextData);
 
 function AuthProvider({children}: AuthProviderProps){
+
+
+    const [ request, response, promptAsync ] = Google.useAuthRequest({
+        expoClientId: '',
+        iosClientId: '',
+        androidClientId: '',
+    });
 
     const [userInfos, setUserInfos] = useState<User>({} as User);
     const [userStorageLoading,setUserStorageLoading] = useState(true);
     const userStorageKey = '@gofinances:user';
 
+    async function getUserData({authentication}){
+
+        const response = await axios(`https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${authentication.accessToken}`)
+        const userLogged: User = {
+            id: response.data.id,
+            name: response.data.name,
+            email: response.data.email,
+            picture: response.data.picture,
+        }
+        setUserInfos(userLogged)
+        await AsyncStorage.setItem(userStorageKey,JSON.stringify(userLogged))
+    }
+
     async function SignInWithGoogle(){
         try{
-            const CLIEND_ID = "";
-            const REDIRECT_URI = "https://auth.expo.io/@eliaslma/gofinances"
-            const SCOPE = encodeURI("profile email");
-            const RESPONSE_TYPE = "token";
-            const authUrl = 
-            `https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIEND_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPE}`
-
-            const {type, params} = await AuthSession.startAsync({ authUrl }) as AuthResponse;
-            if(type === 'success'){
-                const response = await axios(`https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${params.access_token}`)
-                const userLogged: User = {
-                    id: response.data.id,
-                    name: response.data.name,
-                    email: response.data.email,
-                    picture: response.data.picture,
-                }
-                await AsyncStorage.setItem(userStorageKey,JSON.stringify(userLogged))
-                setUserInfos(userLogged)
-            }
-
+            await promptAsync({useProxy: true, showInRecents: true});
         }catch(error){
             throw new Error(error)
         }
-
     }
 
     async function SignInWithApple(){
@@ -86,8 +79,8 @@ function AuthProvider({children}: AuthProviderProps){
                 await AsyncStorage.setItem(userStorageKey,JSON.stringify(userLogged))
                 setUserInfos(userLogged)
             }
-            // signed in
-          } catch (error) {
+            
+          }catch (error) {
             throw Error(error)
           }
     }
@@ -107,10 +100,16 @@ function AuthProvider({children}: AuthProviderProps){
         await AsyncStorage.removeItem(userStorageKey)
     }
 
-    useEffect(() =>{
-        getUserInfo()
+    useEffect(() => {
+        getUserInfo(); 
     },[])
 
+    useEffect(() => {
+        if(response?.type === 'success'){
+            getUserData(response)
+        }
+    },[response])
+    
     return(
         <AuthContext.Provider value={{
             user: userInfos,
