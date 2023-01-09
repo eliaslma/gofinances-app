@@ -23,6 +23,7 @@ import{
     LoadContainer
 
 } from './styles'
+import { useAuth } from '@myApp/hooks/auth';
 
 export interface DataListProps extends TransactionCardProps{
     id: string;
@@ -42,9 +43,8 @@ export function Dashboard(){
     const [isLoading, setLoading] = useState(true);
     const [myTransactions,setMyTransactions] = useState<DataListProps[]>([]);
     const [highLightData, setHighLightData] = useState<HighLightData>({} as HighLightData);
+    const {signOut, user} = useAuth();
     
-
-
     function getLastTransactionDate(transactions: DataListProps[], type: 'up' | 'down'){
 
         // função max retorna o maior valor do vetor
@@ -146,14 +146,14 @@ export function Dashboard(){
             <Header> 
                 <UserWrapper>
                     <UserInfo>
-                        <Photo source={{ uri: 'https://avatars.githubusercontent.com/u/70176310?v=4'}}/>
+                        <Photo source={{ uri: user.picture }}/>
                         <User>
                             <UserGreeting>Olá,</UserGreeting>
-                            <UserName>Elias</UserName>
+                            <UserName>{user.name}</UserName>
                         </User>
                     </UserInfo>
 
-                    <LogoutButton onPress={() => {}}>
+                    <LogoutButton onPress={signOut}>
                         <Icon name="power"/>
                     </LogoutButton>
                     
