@@ -16,14 +16,14 @@ import {
     Footer,
     FooterWrapper
 } from './styles'
-import { ActivityIndicator, Alert } from "react-native";
+import { ActivityIndicator, Alert, Platform } from "react-native";
 
 export function SignIn(){
     
     const { SignInWithGoogle, SignInWithApple } = useAuth();
     const [isLoading, setIsLoading ] = useState(false)
     const theme = useTheme()
-    
+      
     async function handleGoogleSignIn(){
         try{
             setIsLoading(true)
@@ -34,7 +34,7 @@ export function SignIn(){
         }
         finally{
             setIsLoading(false)
-        }
+        }                
     }
 
     async function handleAppleSignIn(){
@@ -70,7 +70,9 @@ export function SignIn(){
             <Footer>
                 <FooterWrapper>
                     <SignInSocialButton title="Entrar com Google" svg={GoogleIcon} onPress={handleGoogleSignIn}/>
+                    { Platform.OS === 'ios' &&
                     <SignInSocialButton title="Entrar com Apple" svg={AppleIcon} onPress={handleAppleSignIn}/>
+                    }
                 </FooterWrapper>
                 { isLoading && <ActivityIndicator color={theme.colors.shape} size="large" style={{marginTop: 16}}/>}
             </Footer>
