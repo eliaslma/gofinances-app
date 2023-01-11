@@ -11,7 +11,8 @@ import { ptBR } from 'date-fns/locale'
 import { ScrollView } from "react-native";
 import { ActivityIndicator } from "react-native";
 
-
+import theme from "@myApp/global/styles/theme";
+import { useAuth } from "@myApp/hooks/auth";
 import { HistoryCard } from "@myApp/components/HistoryCard";
 import { 
     Container,
@@ -24,12 +25,14 @@ import {
     SelectIcon,
     LoadContainer
 } from "./styles";
-import theme from "@myApp/global/styles/theme";
+
+
 
 export function Resume(){
     const [selectedDate, setSelectedDate] = useState( new Date());
     const [totalByCategories, setTotalByCategories] = useState([]);
     const [isLoading, setIsLoading] = useState(false)
+    const { user } = useAuth();
 
     function handleDateChange(action: 'next' | 'prev'){
         if(action === 'next'){
@@ -41,7 +44,7 @@ export function Resume(){
 
 
     async function getTransactionSummary(){
-        const dataKey = '@gofinances:transactions';
+        const dataKey = `@gofinances:transactions_user:${user.id}`;
         const response = await AsyncStorage.getItem(dataKey);
         const transactions = response ? JSON.parse(response): [];
         setIsLoading(true)

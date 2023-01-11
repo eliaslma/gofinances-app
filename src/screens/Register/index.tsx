@@ -16,6 +16,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import uuid from 'react-native-uuid';
 import { useNavigation } from '@react-navigation/native';
 
+import { useAuth } from '@myApp/hooks/auth';
 import { Button } from '@myApp/components/Form/Button';
 import { TransactionTypeButton } from '@myApp/components/Form/TransactionTypeButton';
 import { CategorySelectButton } from '@myApp/components/Form/CategorySelectButton';
@@ -30,6 +31,7 @@ import {
     TransactionTypes,
 
 } from './styles';
+
 
 interface FormData {
     name: string;
@@ -47,11 +49,14 @@ const schema = Yup.object().shape({
 });
 
 export function Register(){
-    
+
     const [category, setCategory] = useState({
        key: 'category',
        name: 'Categoria'
     })
+
+    const { user } = useAuth();
+
     const [transactionType, setTransactionType] = useState('')
     // estado para controlar se os botões foram selecionados pelo menos 1 vez
     const [selectionStatus, setSelection] = useState(false) 
@@ -103,7 +108,7 @@ export function Register(){
         
 
         try {
-            const dataKey = '@gofinances:transactions';
+            const dataKey = `@gofinances:transactions_user:${user.id}`;
             const dataList = await AsyncStorage.getItem(dataKey); // puxando todos os dados com a key específica
             const currentData = dataList ? JSON.parse(dataList) : [];
 

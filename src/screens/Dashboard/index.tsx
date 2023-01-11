@@ -47,10 +47,15 @@ export function Dashboard(){
     
     function getLastTransactionDate(transactions: DataListProps[], type: 'up' | 'down'){
 
+        const collectionFiltered = transactions.filter(( transaction ) => transaction.type === type);
+
+        if(collectionFiltered.length === 0){
+            return 0;
+        }
+       
         // função max retorna o maior valor do vetor
         const lastTransaction = new Date(
-        Math.max.apply(Math, transactions
-        .filter(( transaction ) => transaction.type === type)
+        Math.max.apply(Math, collectionFiltered
         .map(( transaction ) => new Date(transaction.date).getTime())));
 
         // retorna dia e mês por extenso
@@ -65,7 +70,7 @@ export function Dashboard(){
 
 
     async function getTransactionList(){
-        const dataKey = '@gofinances:transactions';
+        const dataKey = `@gofinances:transactions_user:${user.id}`;
         const response = await AsyncStorage.getItem(dataKey);
         const transactions = response ? JSON.parse(response): [];
 
@@ -115,11 +120,11 @@ export function Dashboard(){
         setHighLightData({
             entries: {
                 amount: entriesTotal.toLocaleString('pt-BR',{ style: 'currency', currency: 'BRL'}),
-                lastTransaction: `Última entrada dia ${lastTransactionEntries}`,
+                lastTransaction: lastTransactionEntries ? `Última entrada dia ${lastTransactionEntries}` : 'Não há entradas',
             },
             expensives: {
                 amount: expensiveTotal.toLocaleString('pt-BR',{ style: 'currency', currency: 'BRL'}),
-                lastTransaction: `Última saída dia ${lastTransactionExpensives}`,
+                lastTransaction: lastTransactionExpensives ? `Última saída dia ${lastTransactionExpensives}` : 'Não há saídas',
             },
             total: {
                 amount: balance.toLocaleString('pt-BR',{ style: 'currency', currency: 'BRL'}),
