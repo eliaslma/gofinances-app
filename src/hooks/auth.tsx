@@ -3,6 +3,7 @@ import * as Google from 'expo-auth-session/providers/google';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as AuthSession from 'expo-auth-session';
 
 // tipagem para elemento filho
 interface AuthProviderProps {
@@ -30,14 +31,15 @@ function AuthProvider({children}: AuthProviderProps){
 
 
     const [ request, response, promptAsync ] = Google.useAuthRequest({
-        expoClientId: '',
-        iosClientId: '',
-        androidClientId: '',
+        expoClientId: '643802899002-q5ftu0kbk0d1qiimif7avt5ak8dijvbg.apps.googleusercontent.com',
+        iosClientId: '643802899002-df30f4pk14hc8rq0j3pnl4tcd3ah8ga4.apps.googleusercontent.com',
+        androidClientId: '643802899002-df30f4pk14hc8rq0j3pnl4tcd3ah8ga4.apps.googleusercontent.com',
     });
 
     const [userInfos, setUserInfos] = useState<User>({} as User);
     const [userStorageLoading,setUserStorageLoading] = useState(true);
     const userStorageKey = '@gofinances:user';
+    const [accessToken, setAccessToken] = useState('');
 
     async function getUserData({authentication}){
 
@@ -98,6 +100,11 @@ function AuthProvider({children}: AuthProviderProps){
     async function signOut(){
         setUserInfos({} as User)
         await AsyncStorage.removeItem(userStorageKey)
+        await AuthSession.revokeAsync({
+            token: accessToken
+          }, {
+            revocationEndpoint: "https://oauth2.googleapis.com/revoke"
+        });
     }
 
     useEffect(() => {
@@ -106,6 +113,7 @@ function AuthProvider({children}: AuthProviderProps){
 
     useEffect(() => {
         if(response?.type === 'success'){
+            setAccessToken(response.authentication.accessToken)
             getUserData(response)
         }
     },[response])
