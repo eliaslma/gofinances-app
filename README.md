@@ -22,6 +22,7 @@ Este projeto foi desenvolvido com as seguintes tecnologias:
 Principais pacotes extra instalados:
 
 - [Styled Components](https://styled-components.com/)
+- [React Native Gesture Handler](https://docs.swmansion.com/react-native-gesture-handler/)
 - [React Hook Form](https://react-hook-form.com/)
 - [React Navigation](https://reactnavigation.org/)
 - [Victory Native](https://formidable.com/open-source/victory/)
